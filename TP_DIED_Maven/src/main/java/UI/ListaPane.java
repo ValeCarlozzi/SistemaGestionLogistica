@@ -11,7 +11,6 @@ import java.util.HashMap;
 import javax.swing.JPanel;
 
 import TP.OrdenDeProvision;
-import TP.Recorrido;
 import TP.Stock;
 
 
@@ -149,31 +148,6 @@ public class ListaPane extends JPanel {
 		}
 		
 		this.setBackground(new Color(60,80,91,255));
-	}
-	
-	ListaPane(ArrayList<Recorrido> recorridos, OrdenDeProvision orden,VentanaCaminosOrden main) {
-
-		this.setLayout(new GridBagLayout()); // Set an appropriate layout for overall needs
-
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.insets = new Insets(5, 0, 5, 0);
-		gbc.gridx = 0;
-		gbc.weightx = 1; // Allow the panel to take up extra horizontal space
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.fill = GridBagConstraints.HORIZONTAL; // Make the panel fill the available space
-
-		int contador;
-
-		contador = 0;
-
-		for (Recorrido item : recorridos) {
-			gbc.gridy = contador;
-			this.add(new ListaItemRecorrido(item, orden, main), gbc);
-			contador++;
-		}
-
-		this.setBackground(new Color(60, 80, 91, 255));
-
 	}
 	
 }

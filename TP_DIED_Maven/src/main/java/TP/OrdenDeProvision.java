@@ -11,14 +11,13 @@ public class OrdenDeProvision {
 	HashMap<String,Integer> listaProductos;
 	EstadoOrdenDeProvision estado;
 
-	public OrdenDeProvision(Integer id, Date fecha, Integer destino, Integer horas, String estados) {
-		this.id = id;
+	public OrdenDeProvision(Date fecha, Integer destino, Integer horas, String estado) {
 		this.fechaOrden = fecha;
 		this.sucursalDestino = destino;
 		this.horasMaximo = horas;
 		this.listaProductos = new HashMap<String,Integer>();
 		
-		if(estados.equals("PENDIENTE")){
+		if(estado == "PENDIENTE"){
 			this.estado = EstadoOrdenDeProvision.PENDIENTE;
 		}else {
 			this.estado = EstadoOrdenDeProvision.EN_PROCESO;

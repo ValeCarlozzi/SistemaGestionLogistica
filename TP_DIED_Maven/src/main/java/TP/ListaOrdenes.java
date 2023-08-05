@@ -2,7 +2,6 @@ package TP;
 
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 import DB.ConexionDB;
 import UI.VentanasError;
@@ -21,13 +20,8 @@ public class ListaOrdenes {
 		
 	}
 	
-	public ArrayList<OrdenDeProvision> getListaOrdenesPendientes() {
-		
-		ArrayList<OrdenDeProvision> listaPendientes = (ArrayList<OrdenDeProvision>) lista.stream()
-															.filter(e -> e.getEstadoString() == "PENDIENTE")
-															.collect(Collectors.toList());
-		
-		return listaPendientes;
+	public ArrayList<OrdenDeProvision> getLista() {
+		return lista;
 	}
 	
 }

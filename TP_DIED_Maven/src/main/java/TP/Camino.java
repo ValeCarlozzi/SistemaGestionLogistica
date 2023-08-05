@@ -2,7 +2,6 @@ package TP;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class Camino {
 	private Integer id;
@@ -93,16 +92,5 @@ public class Camino {
 	public void setTiempodeTransito(Integer tiempodeTransito) {
 		this.tiempodeTransito = tiempodeTransito;
 	}
-	
-	@Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Camino)) return false;
-        Camino other = (Camino) o;
-        return Objects.equals(origen, other.origen) &&
-               Objects.equals(destino, other.destino) &&
-               Integer.compare(capMaxima, other.capMaxima) == 0;
-    }
-    
 	
 }

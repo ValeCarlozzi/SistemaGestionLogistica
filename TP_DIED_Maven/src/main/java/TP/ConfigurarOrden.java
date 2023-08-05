@@ -2,21 +2,14 @@ package TP;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import DB.ConexionDB;
-import UI.VentanaCaminosOrden;
 import UI.VentanasError;
 
 public class ConfigurarOrden {
 
 	public ConfigurarOrden(OrdenDeProvision orden){
 		
-		//primero consigo las sucursales que pueden enviar el pedido
 		ArrayList<Integer> idSucursalesDisponibles = new ArrayList<Integer>();
 				
 		ArrayList<Stock> stockSucursales = null;
@@ -26,6 +19,10 @@ public class ConfigurarOrden {
 		} catch (Exception e) {
 			new VentanasError(e.getMessage());
 		}
+		for(Stock s : stockSucursales) {
+			System.out.println(s.getIdSucursal());
+		}
+		System.out.println("-----------------");
 		
 		
 		HashMap <String, Integer> productosOrden = orden.getListaProductos();
@@ -45,12 +42,15 @@ public class ConfigurarOrden {
 					id = stock.getIdSucursal();
 					sublista.put(stock.getNombre(), stock.getStockProducto());
 
+					System.out.println("----sublista-----");
+					System.out.println(id + " | " + stock.getNombre() + " | " + sublista.get(stock.getNombre()));
+
 				} else if (id != stock.getIdSucursal()) {
 
-					//chequeo que la sublista (lista de stocks en UNA sucursal) contenga todos los productos de la orden y sus cantidades necesarias
+					System.out.println("LLAMO CON " + id);
 					if (tieneStock(id, sublista, productosOrden)) {
-						//si puede hacer el pedido se agrega el id a los id de sucursales disponibles para el pedido
-						idSucursalesDisponibles.add(id);	
+						idSucursalesDisponibles.add(id);
+						System.out.println("AGREGO " + id);
 					}
 
 					sublista = new HashMap<String, Integer>();
@@ -58,17 +58,26 @@ public class ConfigurarOrden {
 					id = stock.getIdSucursal();
 
 					sublista.put(stock.getNombre(), stock.getStockProducto());
-					
+					System.out.println("-----------------");
+					System.out.println("----sublista-----");
+					System.out.println(id + " | " + stock.getNombre() + " | " + sublista.get(stock.getNombre()));
+
 				} else {
 					sublista.put(stock.getNombre(), stock.getStockProducto());
+					System.out.println(id + " | " + stock.getNombre() + " | " + sublista.get(stock.getNombre()));
 				}
 
 			}
 			else {
+				System.out.println("LLAMO CON " + id);
 				if (tieneStock(id, sublista, productosOrden)) {
 					idSucursalesDisponibles.add(id);
+					System.out.println("AGREGO " + id);
 				}
 			}
+			
+			
+			
 		}
 		
 		
@@ -83,81 +92,18 @@ public class ConfigurarOrden {
 		
 		ArrayList<Sucursal> sucursalesDisponibles = new ArrayList<Sucursal>();
 		
-		//se crea una lista de las sucursales DISPONIBLES que pueden hacer el pedido
 		for(Sucursal sucursal : sucursales) {
 			if(idSucursalesDisponibles.contains(sucursal.id()) && sucursal.estadoToString() == "Operativa") {
 				sucursalesDisponibles.add(sucursal);
 			}
 		}
 		
-		
-		Sucursal sucursalDestino = null;
-		
-		//busco sucursal destino
-		for(Sucursal suc : sucursales) {
-			if(suc.id() == orden.getSucursalDestino()) {
-				sucursalDestino = suc;
-				break;
-			}
+		System.out.println("-               -");
+		System.out.println("----resultado----");
+		for(Sucursal id1 : sucursalesDisponibles) {
+			System.out.println(id1.id());
 		}
 		
-		if(sucursalDestino == null) {
-			new VentanasError("La sucursal destino no existe");
-			return;
-		}
-		else if(sucursalDestino.estadoToString() == "No Operativa") {
-			new VentanasError("La sucursal no está operativa");
-			return;
-		}
-		
-		
-		//----------------------------------
-		
-		//armo los caminos desde esas sucursales disponibles a la sucursal destino y con eso una lista de los recorridos posibles
-		
-		Graph<Sucursal,Camino> grafo = new ArmadorGrafo().getGrafo();
-
-		DijkstraShortestPath<Sucursal,Camino> alg = new DijkstraShortestPath<Sucursal,Camino>(grafo);
-			
-		GraphPath<Sucursal,Camino> recorrido;
-		
-		ArrayList<Recorrido> recorridos= new ArrayList<Recorrido>();
-		
-		//cargo la lista de recorridos usando el algoritmo Dijkstra para el camino mas corto
-		for(Sucursal suc : sucursalesDisponibles) {
-			
-			recorrido = alg.getPath(suc, sucursalDestino);
-
-			if(recorrido == null) {
-				
-			}else if(!(recorrido.getEdgeList().isEmpty())) {
-				recorridos.add(new Recorrido(suc,sucursalDestino,recorrido.getEdgeList(),calculoTiempo(recorrido.getEdgeList())));
-			}
-			
-			
-
-		}
-		
-		if(recorridos.isEmpty()) {
-			new VentanasError("No se encontraron caminos");
-			return;
-		}
-		
-		new VentanaCaminosOrden(recorridos, orden);
-		
-	}
-	
-	private Integer calculoTiempo(List<Camino> lista) {
-		
-			Integer tiempo = 0;
-			
-			for(Camino camino : lista) {
-				
-				tiempo += camino.getTiempoTransito();
-				
-			}
-		
-		return tiempo;
 		
 	}
 	

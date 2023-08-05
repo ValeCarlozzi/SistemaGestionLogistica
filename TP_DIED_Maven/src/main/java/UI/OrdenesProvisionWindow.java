@@ -36,7 +36,7 @@ public class OrdenesProvisionWindow extends JFrame {
 	
 	OrdenesProvisionWindow(Sucursal s){
 		
-		this.listaOrdenes = new ListaOrdenes(s).getListaOrdenesPendientes();
+		this.listaOrdenes = new ListaOrdenes(s).getLista();
 		
 		this.sucursal = s; 
 		
