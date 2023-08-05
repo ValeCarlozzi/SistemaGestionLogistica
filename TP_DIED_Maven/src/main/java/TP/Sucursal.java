@@ -1,5 +1,7 @@
 package TP;
 
+import java.util.Objects;
+
 public class Sucursal {
   	private Integer id;
   	private String nombre;
@@ -96,5 +98,19 @@ public class Sucursal {
 	public void setEstado(TipoEstadoSucursal estado) {
 		this.estado = estado;
 	}
+	
+	
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Sucursal)) return false;
+        Sucursal other = (Sucursal) o;
+        return this.id == other.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
   	
   }

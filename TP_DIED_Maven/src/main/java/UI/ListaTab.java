@@ -1,6 +1,7 @@
 package UI;
 
 import TP.OrdenDeProvision;
+import TP.Recorrido;
 import TP.Stock;
 
 import java.awt.Color;
@@ -24,59 +25,6 @@ public class ListaTab extends JPanel{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	/*
-	ListaTab(String tipo){
-		this.setLayout(new BorderLayout());
-		Border border = BorderFactory.createLineBorder(Color.WHITE, 1);
-        this.setBorder(border);
-
-		JScrollPane scrollPane = new JScrollPane(new ListaPane(tipo));
-		
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-		scrollPane.setViewportBorder(null);
-		
-		// Set a custom ScrollBarUI on the vertical scrollbar
-        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
-        verticalScrollBar.setUI(new CustomScrollBarUI());
-        verticalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
-        verticalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
-        
-        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
-        horizontalScrollBar.setUI(new CustomScrollBarUI());
-        horizontalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
-        horizontalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
-	
-		this.add(scrollPane);
-	}
-	*/
-	/*
-	ListaTab(ArrayList<?> lista){
-		this.setLayout(new BorderLayout());
-		Border border = BorderFactory.createLineBorder(Color.WHITE, 1);
-        this.setBorder(border);
-
-		JScrollPane scrollPane = new JScrollPane(new ListaPane(lista));
-		
-		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
-		scrollPane.setViewportBorder(null);
-		
-		// Set a custom ScrollBarUI on the vertical scrollbar
-        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
-        verticalScrollBar.setUI(new CustomScrollBarUI());
-        verticalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
-        verticalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
-        
-        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
-        horizontalScrollBar.setUI(new CustomScrollBarUI());
-        horizontalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
-        horizontalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
-	
-		this.add(scrollPane);
-	}
-	*/
 	
 	ListaTab(ArrayList<?> lista, MenuPrincipal main){
 		this.setLayout(new BorderLayout());
@@ -163,6 +111,34 @@ public class ListaTab extends JPanel{
         this.setBorder(border);
 
 		JScrollPane scrollPane = new JScrollPane(new ListaPane(listaProductos));
+		
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+		scrollPane.setViewportBorder(null);
+		
+		// Set a custom ScrollBarUI on the vertical scrollbar
+        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+        verticalScrollBar.setUI(new CustomScrollBarUI());
+        verticalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
+        verticalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
+        
+        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+        horizontalScrollBar.setUI(new CustomScrollBarUI());
+        horizontalScrollBar.setUnitIncrement(17); // Change the unit increment to 20 pixels
+        horizontalScrollBar.setBlockIncrement(200); // Change the block increment to 200 pixels
+	
+		this.add(scrollPane);
+
+		
+	}
+	
+	ListaTab(ArrayList<Recorrido> recorridos, OrdenDeProvision orden, VentanaCaminosOrden main){
+		
+		this.setLayout(new BorderLayout());
+		Border border = BorderFactory.createLineBorder(Color.WHITE, 1);
+        this.setBorder(border);
+
+		JScrollPane scrollPane = new JScrollPane(new ListaPane(recorridos, orden, main));
 		
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 

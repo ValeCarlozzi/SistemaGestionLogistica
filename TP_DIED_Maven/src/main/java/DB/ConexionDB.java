@@ -4,12 +4,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import TP.Camino;
 import TP.OrdenDeProvision;
@@ -32,8 +30,6 @@ public class ConexionDB {
 	private static final String insert_sucursal = "INSERT INTO sucursal (ID, nombre, estado, apertura, cierre) VALUES (?,?,?,?,?)";
 	private static final String update_sucursal = "UPDATE sucursal SET nombre = ?,estado = ?,apertura = ?,cierre = ? WHERE id = ?";
 	private static final String delete_sucursal = "DELETE FROM sucursal WHERE id=?";
-	private static final String search_sucursal = "SELECT * FROM public.sucursal ("
-			+ "id,nombre,hapertura,hcierre,estado,direccion)" + "WHERE id= ?";
 	private static final String ver_sucursales = "SELECT * FROM sucursal";
 	private static final String stock_sucursal = "SELECT * FROM stock WHERE idsucursal = ?";
 	
@@ -41,8 +37,6 @@ public class ConexionDB {
 	private static final String insert_producto = "INSERT INTO producto (nombre, descripcion, precio, peso) VALUES (?,?,?,?)";
 	private static final String update_producto = "UPDATE producto SET descripcion = ?,precio = ?,peso = ? WHERE nombre = ?";
 	private static final String delete_producto = "DELETE FROM producto WHERE nombre=?";
-	private static final String search_producto_id = "SELECT * FROM public.producto ("
-			+ "id,nombre,descripcion,precio,peso)" + "WHERE id= ?";
 	private static final String ver_productos = "SELECT * FROM producto";
 
 
@@ -57,32 +51,13 @@ public class ConexionDB {
 	private static final String insert_productos_orden = "INSERT INTO productosorden VALUES (?,?,?)";
 	private static final String ver_ordenes = "SELECT * FROM ordenprovision WHERE id_sucursal_destino = ?";
 	private static final String ver_productos_orden = "SELECT * FROM productosorden WHERE idorden= ?";
+	private static final String orden_EN_PROCESO = "UPDATE ordenprovision SET estado = ? WHERE id = ?";
 	
 	// STOCK
 	private static final String insert_stock = "INSERT INTO stock VALUES (?,?,?)";
 	private static final String update_stock = "UPDATE stock SET stock =? WHERE idsucursal=? AND nombreproducto=?";
 	private static final String delete_stock = "DELETE FROM stock WHERE idsucursal=? AND nombreproducto=?";
 	private static final String ver_stock = "SELECT * FROM stock";
-
-
-	// LISTA DE PRODUCTOS
-	private static final String insert_lista = "INSERT INTO public.lista (" + "id_orden,id_producto,cantidad)"
-			+ "VALUES (?,?,?)";
-
-	/*
-	 * Integer id,Integer origen,Integer destino,Integer capMaxima,
-	 * TipoEstadoSucursal estado, String tiempo)
-	 */
-
-	/*
-	 * private static final String update_producto = "UPDATE public.producto (" +
-	 * "id,nombre,descripcion,precio,peso)" +
-	 * "SET nombre=?,descripcion=?,precio=?,peso=?" + "WHERE id=?"; private static
-	 * final String delete_producto = "DELETE FROM public.producto (" +
-	 * "id,nombre,descripcion,precio,peso)" + "WHERE id=?"; private static final
-	 * String search_producto_id = "SELECT * FROM public.producto ("+
-	 * "id,nombre,descripcion,precio,peso)" +"WHERE id= ?";
-	 */
 
 	public void crearSucursal(Sucursal s) throws SQLException{
 
@@ -217,49 +192,6 @@ public class ConexionDB {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-		}
-	}
-
-	public Sucursal buscarSucursalporId(Integer id) {
-		Connection conx = null;
-		PreparedStatement pstm = null;
-		try {
-			// cargar el driver
-			Class.forName(DRIVER);
-			// obtenemos una coneccion
-			conx = DriverManager.getConnection(URL, USR, PAS);
-			// preparamos el comando sql
-			pstm = conx.prepareStatement(search_sucursal);
-			// nombre=?,hapertura=?,hcierre=?,estado=?,direccion=?" + "WHERE id=?
-			pstm.setInt(1, id);
-			ResultSet rs = pstm.executeQuery();
-			while (rs.next()) {
-				Sucursal suc = new Sucursal();
-				suc.setId(rs.getInt(1));
-				suc.setNombre(rs.getString(2));
-				suc.setHorarioApertura(rs.getString(3));
-				suc.setHorarioCierre(rs.getString(4));
-				suc.setEstado(rs.getInt(5));
-				suc.setString(rs.getString(6));
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			if (pstm != null)
-				try {
-					pstm.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			if (conx != null)
-				try {
-					conx.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			return suc;
 		}
 	}
 
@@ -874,7 +806,7 @@ public class ConexionDB {
 		
 	}
 	
-public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,ClassNotFoundException{
+	public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,ClassNotFoundException{
 		
 		ArrayList<Stock> listaStock = new ArrayList<>();
 
@@ -935,6 +867,9 @@ public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,
 			pstm.setInt(3, op.getHorasMaximo());
 			pstm.setString(4, op.getEstadoString());
 			int cantidad = pstm.executeUpdate();
+			if(cantidad > 0) {
+				
+			}
 
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -953,7 +888,7 @@ public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,
 							pstm.setInt(1, idGenerado);
 							pstm.setString(2, nombre);
 							pstm.setInt(3, op.getListaProductos().get(nombre));
-							int cantidad = pstm.executeUpdate();
+							pstm.executeUpdate();
 						}
 				}
 				
@@ -986,6 +921,7 @@ public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,
 
 	}
 	
+	
 	public ArrayList<OrdenDeProvision> crearListaOrdenes(Integer idsucursal) throws SQLException,ClassNotFoundException {
 	
 		ArrayList<OrdenDeProvision> listaOrden = new ArrayList<OrdenDeProvision>();
@@ -1009,7 +945,7 @@ public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,
 			
 				while (rs.next()) {
 					
-					OrdenDeProvision orden = new OrdenDeProvision(rs.getDate(2),rs.getInt(3),rs.getInt(4),rs.getString(5));
+					OrdenDeProvision orden = new OrdenDeProvision(rs.getInt(1),rs.getDate(2),rs.getInt(3),rs.getInt(4),rs.getString(5));
 					
 					listaProducto = new HashMap<String, Integer>();
 					
@@ -1050,6 +986,48 @@ public ArrayList<Stock> crearListaStockSucursal(Sucursal s) throws SQLException,
 		}
 
 		return listaOrden;
+		
+		
+	}
+	
+	public void setOrdenEnProceso(OrdenDeProvision op) throws SQLException,ClassNotFoundException {
+		
+				Connection conx = null;
+				PreparedStatement pstm = null;
+				try {
+					// cargar el driver
+					Class.forName(DRIVER);
+					// obtenemos una coneccion
+					conx = DriverManager.getConnection(URL, USR, PAS);
+					// preparamos el comando sql
+					pstm = conx.prepareStatement(orden_EN_PROCESO);
+					// nombre=?,descripcion=?,precio=?,peso=?" + "WHERE id=
+					pstm.setString(1, "EN PROCESO");
+					pstm.setInt(2, op.getId());
+
+					int cantidad = pstm.executeUpdate();
+					if(cantidad>0) {
+						new VentanaConfirmacion("Orden establecida EN PROCESO","Elegir orden");
+					}
+					
+				} catch (ClassNotFoundException e) {
+					throw e;
+				} catch (SQLException e) {
+					throw e;
+				} finally {
+					if (pstm != null)
+						try {
+							pstm.close();
+						} catch (SQLException e) {
+							throw e;
+						}
+					if (conx != null)
+						try {
+							conx.close();
+						} catch (SQLException e) {
+							throw e;
+						}
+				}
 		
 		
 	}

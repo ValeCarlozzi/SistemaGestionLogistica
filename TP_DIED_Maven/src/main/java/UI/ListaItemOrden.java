@@ -96,6 +96,7 @@ public class ListaItemOrden extends JPanel{
             @Override
             public void actionPerformed(ActionEvent e) {
             	new ConfigurarOrden(orden);
+            	main.dispose();
             }
         });
         
