@@ -19,7 +19,7 @@ El sistema permite gestionar:
 - Órdenes de provisión y asignación de caminos logísticos
 - Funciones como cálculo de **flujo máximo** y **PageRank** de las sucursales
 
-## ✨ Funcionalidades principales
+## Funcionalidades principales
 
 1. **Gestión de sucursales**
    - Alta, baja, modificación, búsqueda y visualización
